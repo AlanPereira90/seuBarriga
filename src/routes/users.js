@@ -2,19 +2,16 @@ const user = require("../services/user")
 
 module.exports = (app) => {
 
-    const findAll = (req,resp) => {
+    const findAll = (req,resp,next) => {
         app.services.user.findAll().then(result => {
             resp.status(200).json(result)
-        })
+        }).catch(err => next(err))
     }
     
-    const create = async (req,resp) => {        
-        const result = await app.services.user.save(req.body)
-
-        if (result.error){
-            return resp.status(400).json(result)
-        }
-        resp.status(201).json(result[0])
+    const create = (req,resp,next) => {  
+        app.services.user.save(req.body).then(result => {
+            resp.status(201).json(result[0])
+        }).catch(err => next(err))
     }
 
     return {

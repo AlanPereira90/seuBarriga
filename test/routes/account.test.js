@@ -34,3 +34,23 @@ test('Deve retornar uma conta por ID', async() => {
     expect(result.body.user_id).toBe(user.id)
     expect(result.body.name).toBe(name)
 })
+
+test('Deve alterar uma conta', async() => {
+    let newName = `${name} updated`
+    const account = await app.db('accounts').insert({name, user_id: user.id}, ['id'])
+    const result = await request(app).put(`${MAIN_ROUTE}/${account[0].id}`).send({name: newName})
+    expect(result.status).toBe(201)
+    expect(result.body.name).toBe(newName)
+})
+
+test('Deve remover uma conta', async() => {
+    const account = await app.db('accounts').insert({name, user_id: user.id}, ['id'])
+    const result = await request(app).delete(`${MAIN_ROUTE}/${account[0].id}`)
+    expect(result.status).toBe(204)
+})
+
+test('Não deve inserir uma conta sem nome', async() => {
+    const result = await request(app).post(MAIN_ROUTE).send({name: '', user_id: user.id})
+    expect(result.status).toBe(400)
+    expect(result.body.error).toBe('Nome é um atributo obrigatório')
+})
