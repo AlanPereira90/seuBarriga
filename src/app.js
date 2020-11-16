@@ -20,11 +20,10 @@ app.get('/',(req, resp) => {
 //tratamento de erro
 app.use((err, req, resp, next) => {
     const {name, message, stack} = err
-    if (name === 'ValidationError'){
-        resp.status(400).json({error: message})
-    } else {
-        resp.status(500).json({name, message, stack})
-    }
+    if (name === 'ValidationError') resp.status(400).json({error: message})
+    else if (name === 'RecursoIndevidoError') resp.status(403).json({error: message})
+    else resp.status(500).json({name, message, stack})
+    
     next(err)
 })
 
