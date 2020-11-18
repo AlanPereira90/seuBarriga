@@ -1,4 +1,5 @@
 const request = require('supertest')
+const { db } = require('../../src/app')
 const app = require('../../src/app')
 
 const MAIN_ROUTE = '/v1/accounts'
@@ -8,7 +9,7 @@ let token
 
 let name = 'acc1'
 
-beforeEach(async() => {
+beforeAll(async() => {
     let name = 'User Test Account'
     let mail = `${Date.now()}@mail.com`
     let password = '1234'
@@ -35,6 +36,7 @@ test('Deve inserir uma conta com sucesso', async() => {
 })
 
 test('Deve listar apenas as contas do usuário', async() => {
+    await app.db('accounts').where({user_id: user.id}).del()
     await app.db('accounts').insert({name: 'acc-1', user_id: user.id})
     await app.db('accounts').insert({name: 'acc-2', user_id: user2.id})
     const result = await request(app)
