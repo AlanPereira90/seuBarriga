@@ -154,27 +154,27 @@ describe('Ao tentar inserir uma transação', async() => {
     }
 
     test('Não deve inserir sem descrição', async() => {
-        testTemplate({description:''},'Descrição é um atributo obrigatório')
+        await testTemplate({description:''},'Descrição é um atributo obrigatório')
     })
     
     test('Não deve inserir uma transação sem valor', async() => {
-        testTemplate({ammount:null},'Valor é um atributo obrigatório')
+        await testTemplate({ammount:null},'Valor é um atributo obrigatório')
     })
     
     test('Não deve inserir uma transação sem data', async() => {
-        testTemplate({date:null},'Data é um atributo obrigatório')
+        await testTemplate({date:null},'Data é um atributo obrigatório')
     })
     
     test('Não deve inserir uma transação sem conta', async() => {
-        testTemplate({acc_id:null},'Conta é um atributo obrigatório')
+        await testTemplate({acc_id:null},'Conta é um atributo obrigatório')
     })
     
     test('Não deve inserir uma transação sem tipo', async() => {
-        testTemplate({type:null},'Tipo é um atributo obrigatório')
+        await testTemplate({type:null},'Tipo é um atributo obrigatório')
     })
     
     test('Não deve inserir uma transação com tipo inválido', async() => {
-        testTemplate({type:'J'},'Tipo inválido')
+        await testTemplate({type:'J'},'Tipo inválido')
     })
 })
 
