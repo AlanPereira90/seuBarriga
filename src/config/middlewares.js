@@ -4,6 +4,6 @@ module.exports = app => {
     const knexLogger = require('knex-logger')
 
     app.use(bodyParser.json())
-    app.use(knexLogger(app.db))
+   // app.use(knexLogger(app.db))
     
 } 

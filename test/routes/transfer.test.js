@@ -95,6 +95,11 @@ describe('Ao salvar uma transferência válida...', async() => {
         expect(income.transfer_id).toBe(transferID)
         expect(outcome.transfer_id).toBe(transferID)
     })
+
+    test('As transações devem estar com status de realizada', async() => {
+        expect(income.status).toBe(true)
+        expect(outcome.status).toBe(true)
+    })
 })
 
 describe('Ao tentar salvar uma transferência inválida...', async() => {
@@ -211,6 +216,11 @@ describe('Ao alterar uma transferência válida...', async() => {
         expect(income.transfer_id).toBe(transferID)
         expect(outcome.transfer_id).toBe(transferID)
     })
+
+    test('As transações devem estar com status de realizada', async() => {
+        expect(income.status).toBe(true)
+        expect(outcome.status).toBe(true)
+    })    
 })
 
 describe('Ao tentar alterar uma transferência inválida...', async() => {

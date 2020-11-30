@@ -32,18 +32,15 @@ module.exports = (app) => {
         if (acc_dest.user_id != transfer.user_id) throw new ValidationError('Conta de destino não pertence ao usuário')
     }
 
-    const save = async (transfer) => {      
-
-        const result = await app.db(transfers).insert(transfer, '*')
-        const transferID = result[0].id
-
-        newTransactions = [{
+    const generateTransactions = (transfer, transferID) => {
+        result = [{
             description: `Transfer to acc ${transfer.acc_dest_id}`,
             date: transfer.date,
             ammount: transfer.ammount * -1,
             type: 'O',
             acc_id: transfer.acc_ori_id,
-            transfer_id: transferID
+            transfer_id: transferID,
+            status: true
         },
         {
             description: `Transfer from acc ${transfer.acc_ori_id}`,
@@ -51,8 +48,18 @@ module.exports = (app) => {
             ammount: transfer.ammount,
             type: 'I',
             acc_id: transfer.acc_dest_id,
-            transfer_id: transferID
+            transfer_id: transferID,
+            status: true
         }]
+
+        return result
+    }
+
+    const save = async (transfer) => {      
+
+        const result = await app.db(transfers).insert(transfer, '*')
+
+        newTransactions = await generateTransactions(transfer, result[0].id)
 
         await app.db(transactions).insert(newTransactions)
         return result
@@ -63,22 +70,7 @@ module.exports = (app) => {
         const result = await app.db(transfers).where({id}).update(transfer, '*')
         const transferID = result[0].id
 
-        newTransactions = [{
-            description: `Transfer to acc ${transfer.acc_dest_id}`,
-            date: transfer.date,
-            ammount: transfer.ammount * -1,
-            type: 'O',
-            acc_id: transfer.acc_ori_id,
-            transfer_id: transferID
-        },
-        {
-            description: `Transfer from acc ${transfer.acc_ori_id}`,
-            date: transfer.date,
-            ammount: transfer.ammount,
-            type: 'I',
-            acc_id: transfer.acc_dest_id,
-            transfer_id: transferID
-        }]
+        newTransactions = await generateTransactions(transfer, result[0].id)
 
         await app.db(transactions).where({transfer_id: transferID}).del()
         await app.db(transactions).insert(newTransactions)
